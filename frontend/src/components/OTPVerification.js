@@ -129,11 +129,16 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
                 size="sm"
                 variant="outline"
                 onClick={() => sendOTP('phone')}
-                disabled={loadingPhone}
+                disabled={loadingPhone || phoneCountdown > 0}
                 data-testid="send-phone-otp-btn"
               >
                 {loadingPhone ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
+                ) : phoneCountdown > 0 ? (
+                  <span className="flex items-center space-x-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{formatTime(phoneCountdown)}</span>
+                  </span>
                 ) : (
                   sentPhone ? 'Resend OTP' : 'Send OTP'
                 )}
