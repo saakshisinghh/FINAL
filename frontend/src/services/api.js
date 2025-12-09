@@ -67,5 +67,19 @@ export const dashboardAPI = {
 export const adminAPI = {
   initData: () => api.post('/admin/init-data'),
 };
+// OTP API
+export const otpAPI = {
+  send: (type) => api.post('/otp/send', { type }),
+  verify: (type, otp) => api.post('/otp/verify', { type, otp }),
+  resend: (type) => api.post('/otp/resend', { type }),
+};
+
+// Profile API
+export const profileAPI = {
+  updateFinancial: (data) => api.post('/profile/financial', data),
+  checkAffordability: (amount, tenure) => api.get('/profile/affordability', {
+    params: { amount, tenure }
+  }),
+};
 
 export default api;
