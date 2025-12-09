@@ -62,6 +62,7 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
   const verifyOTP = async (type) => {
     const otp = type === 'phone' ? phoneOTP : emailOTP;
     const setLoading = type === 'phone' ? setLoadingPhone : setLoadingEmail;
+    const setCountdown = type === 'phone' ? setPhoneCountdown : setEmailCountdown;
 
     if (!otp || otp.length !== 6) {
       toast.error('Please enter a valid 6-digit OTP');
@@ -70,22 +71,20 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
 
     setLoading(true);
     try {
-      await axios.post(
-        `${BACKEND_URL}/api/otp/verify`,
-        { type, otp },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-      );
+      await otpAPI.verify(type, otp);
 
       toast.success(`${type === 'phone' ? 'Phone' : 'Email'} verified successfully! ✓`);
       
       if (type === 'phone') {
         setPhoneOTP('');
         setSentPhone(false);
+        setDemoPhoneOTP('');
+        setCountdown(0);
       } else {
         setEmailOTP('');
         setSentEmail(false);
+        setDemoEmailOTP('');
+        setCountdown(0);
       }
 
       if (onVerificationComplete) {
@@ -96,6 +95,12 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   return (
