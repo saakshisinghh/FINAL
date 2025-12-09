@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { toast } from 'sonner';
-import axios from 'axios';
-import { Calculator, Loader2, AlertCircle, CheckCircle2, TrendingUp } from 'lucide-react';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+import { profileAPI } from '../services/api';
+import { Calculator, Loader2, AlertCircle, CheckCircle2, TrendingUp, IndianRupee, Clock } from 'lucide-react';
 
 export const AffordabilityCalculator = ({ user }) => {
   const [loading, setLoading] = useState(false);
@@ -17,30 +15,28 @@ export const AffordabilityCalculator = ({ user }) => {
 
   const hasFinancialProfile = user?.financial_profile?.monthly_income;
 
+  // Auto-calculate when amount or tenure changes (debounced)
+  useEffect(() => {
+    if (amount && parseFloat(amount) > 0 && hasFinancialProfile) {
+      const timer = setTimeout(() => {
+        calculateAffordability();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [amount, tenure]);
+
   const calculateAffordability = async () => {
     if (!hasFinancialProfile) {
-      toast.error('Please complete your financial profile first');
       return;
     }
 
     if (!amount || amount <= 0) {
-      toast.error('Please enter a valid loan amount');
       return;
     }
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${BACKEND_URL}/api/profile/affordability`,
-        {
-          params: {
-            amount: parseFloat(amount),
-            tenure: parseInt(tenure)
-          },
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-      );
-
+      const response = await profileAPI.checkAffordability(parseFloat(amount), parseInt(tenure));
       setResult(response.data);
     } catch (error) {
       toast.error('Failed to calculate affordability');
