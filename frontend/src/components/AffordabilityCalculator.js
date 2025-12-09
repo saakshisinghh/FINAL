@@ -142,26 +142,62 @@ export const AffordabilityCalculator = ({ user }) => {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-slate-600">Monthly EMI</p>
-                  <p className="font-semibold text-lg">₹{result.proposed_emi?.toLocaleString('en-IN')}</p>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center space-x-2">
+                    <IndianRupee className="h-4 w-4 text-slate-600" />
+                    <div>
+                      <p className="text-slate-600">Monthly EMI</p>
+                      <p className="font-semibold text-lg">₹{result.proposed_emi?.toLocaleString('en-IN')}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-slate-600" />
+                    <div>
+                      <p className="text-slate-600">Total EMI</p>
+                      <p className="font-semibold text-lg">₹{result.total_emi?.toLocaleString('en-IN')}</p>
+                    </div>
+                  </div>
                 </div>
+
+                {/* EMI Percentage Bar */}
                 <div>
-                  <p className="text-slate-600">Total EMI</p>
-                  <p className="font-semibold text-lg">₹{result.total_emi?.toLocaleString('en-IN')}</p>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-slate-600">EMI as % of Income</span>
+                    <span className={`font-semibold ${result.emi_percentage > result.max_emi_percentage ? 'text-red-600' : 'text-green-600'}`}>
+                      {result.emi_percentage?.toFixed(1)}% / {result.max_emi_percentage}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div
+                      className={`h-3 rounded-full transition-all ${
+                        result.emi_percentage > result.max_emi_percentage
+                          ? 'bg-red-500'
+                          : 'bg-green-500'
+                      }`}
+                      style={{ width: `${Math.min((result.emi_percentage / result.max_emi_percentage) * 100, 100)}%` }}
+                    ></div>
+                  </div>
                 </div>
+
+                {/* DTI Ratio Bar */}
                 <div>
-                  <p className="text-slate-600">EMI Percentage</p>
-                  <p className={`font-semibold ${result.emi_percentage > result.max_emi_percentage ? 'text-red-600' : 'text-green-600'}`}>
-                    {result.emi_percentage}% / {result.max_emi_percentage}%
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-600">DTI Ratio</p>
-                  <p className={`font-semibold ${result.dti_ratio > result.max_dti_ratio ? 'text-red-600' : 'text-green-600'}`}>
-                    {result.dti_ratio}% / {result.max_dti_ratio}%
-                  </p>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-slate-600">Debt-to-Income Ratio</span>
+                    <span className={`font-semibold ${result.dti_ratio > result.max_dti_ratio ? 'text-red-600' : 'text-green-600'}`}>
+                      {result.dti_ratio?.toFixed(1)}% / {result.max_dti_ratio}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div
+                      className={`h-3 rounded-full transition-all ${
+                        result.dti_ratio > result.max_dti_ratio
+                          ? 'bg-red-500'
+                          : 'bg-green-500'
+                      }`}
+                      style={{ width: `${Math.min((result.dti_ratio / result.max_dti_ratio) * 100, 100)}%` }}
+                    ></div>
+                  </div>
                 </div>
               </div>
             </div>
