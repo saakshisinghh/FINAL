@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { toast } from 'sonner';
-import axios from 'axios';
-import { CheckCircle2, Mail, Phone, Loader2 } from 'lucide-react';
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+import { otpAPI } from '../services/api';
+import { CheckCircle2, Mail, Phone, Loader2, Clock } from 'lucide-react';
 
 export const OTPVerification = ({ user, onVerificationComplete }) => {
   const [phoneOTP, setPhoneOTP] = useState('');
@@ -17,6 +15,24 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
   const [sentEmail, setSentEmail] = useState(false);
   const [demoPhoneOTP, setDemoPhoneOTP] = useState('');
   const [demoEmailOTP, setDemoEmailOTP] = useState('');
+  const [phoneCountdown, setPhoneCountdown] = useState(0);
+  const [emailCountdown, setEmailCountdown] = useState(0);
+
+  // Countdown timer for phone OTP
+  useEffect(() => {
+    if (phoneCountdown > 0) {
+      const timer = setTimeout(() => setPhoneCountdown(phoneCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [phoneCountdown]);
+
+  // Countdown timer for email OTP
+  useEffect(() => {
+    if (emailCountdown > 0) {
+      const timer = setTimeout(() => setEmailCountdown(emailCountdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [emailCountdown]);
 
   const verification = user?.verification || {};
 
