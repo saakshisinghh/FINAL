@@ -1,34 +1,76 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.App {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #F8FAFC, #F1F5F9);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.dark .App {
+  background: linear-gradient(to bottom right, #020617, #0F172A);
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* Chat bubble animations */
+.chat-message {
+  animation: slideIn 0.3s ease-out;
 }
 
-.App-link {
-    color: #61dafb;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Button hover effects */
+.btn-primary {
+  @apply bg-slate-900 text-white px-6 py-2.5 rounded-sm font-medium;
+  @apply hover:shadow-md active:scale-95;
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+
+.btn-secondary {
+  @apply bg-teal-600 text-white px-6 py-2.5 rounded-sm font-medium;
+  @apply hover:shadow-md active:scale-95;
+  transition: box-shadow 0.2s, transform 0.1s;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply border border-slate-200 dark:border-slate-800;
+  transition: border-color 0.3s;
+}
+
+.card-hover:hover {
+  @apply border-teal-500/50;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 2px solid #f3f4f6;
+  border-top: 2px solid #0D9488;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Credit score gauge animation */
+@keyframes gaugeAnimation {
+  from {
+    stroke-dashoffset: 251;
+  }
+  to {
+    stroke-dashoffset: var(--score-offset);
+  }
+}
+
+.gauge-animated {
+  animation: gaugeAnimation 1.5s ease-out forwards;
 }
