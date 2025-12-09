@@ -40,21 +40,17 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
     const setLoading = type === 'phone' ? setLoadingPhone : setLoadingEmail;
     const setSent = type === 'phone' ? setSentPhone : setSentEmail;
     const setDemoOTP = type === 'phone' ? setDemoPhoneOTP : setDemoEmailOTP;
+    const setCountdown = type === 'phone' ? setPhoneCountdown : setEmailCountdown;
 
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${BACKEND_URL}/api/otp/send`,
-        { type },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        }
-      );
+      const response = await otpAPI.send(type);
 
       setSent(true);
       setDemoOTP(response.data.demo_otp);
+      setCountdown(300); // 5 minutes countdown
       toast.success(`OTP sent to your ${type}!`, {
-        description: `Demo OTP: ${response.data.demo_otp}`
+        description: `Demo OTP: ${response.data.demo_otp} (Valid for 5 minutes)`
       });
     } catch (error) {
       toast.error(`Failed to send OTP to ${type}`);
