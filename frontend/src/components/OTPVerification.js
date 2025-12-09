@@ -191,11 +191,16 @@ export const OTPVerification = ({ user, onVerificationComplete }) => {
                 size="sm"
                 variant="outline"
                 onClick={() => sendOTP('email')}
-                disabled={loadingEmail}
+                disabled={loadingEmail || emailCountdown > 0}
                 data-testid="send-email-otp-btn"
               >
                 {loadingEmail ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
+                ) : emailCountdown > 0 ? (
+                  <span className="flex items-center space-x-1">
+                    <Clock className="h-3 w-3" />
+                    <span>{formatTime(emailCountdown)}</span>
+                  </span>
                 ) : (
                   sentEmail ? 'Resend OTP' : 'Send OTP'
                 )}
